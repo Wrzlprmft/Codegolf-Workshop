@@ -99,7 +99,7 @@ Gerrit Ansmann
 		\item Dokumentation
 		\item Lesbarkeit
 		\item Nutzerfreundlichkeit
-		\item sprechende Namen
+		\item Standards
 		\item Code-Formatierung
 		\item Speicherbedarf
 		\item Laufzeit
@@ -241,7 +241,7 @@ Gerrit Ansmann
 	50 Zeichen
 \end{frame}
 
-\begin{frame}[fragile]{Ansatz 1.1: Reduce}
+\begin{frame}[fragile]{Ansatz 1.1: reduce}
 	Rohfassung
 	
 	\vfill
@@ -257,7 +257,7 @@ Gerrit Ansmann
 	68 Zeichen
 \end{frame}
 
-\begin{frame}[fragile]{Ansatz 1.1: Reduce}
+\begin{frame}[fragile]{Ansatz 1.1: reduce}
 	\texttt{lambda}-Ausdruck
 	
 	\vfill
@@ -272,7 +272,7 @@ Gerrit Ansmann
 	64 Zeichen
 \end{frame}
 
-\begin{frame}[fragile]{Ansatz 1.1: Reduce}
+\begin{frame}[fragile]{Ansatz 1.1: reduce}
 	Einsetzen und Leerzeichen entfernen
 	
 	\vfill
@@ -285,6 +285,80 @@ Gerrit Ansmann
 	
 	48 Zeichen
 \end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.2: exec}
+	Rohfassung
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   p = 1
+	   for _ in range(n):
+	      p *= n
+	      n -= 1
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	64 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.2: exec}
+	Mit \texttt{exec}-Funktion
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   p = 1
+	   for _ in range(n):
+	      exec("p *= n;n -= 1")
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	70 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.2: exec}
+	Schleife durch String-Multiplikation ersetzen:
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   p = 1
+	   exec("p *= n;n -= 1;"*n)
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	52 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.2: exec}
+	Leerraum entfernen:
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):p=1;exec("p*=n;n-=1;"*n);return p
+	\end{python3code}
+	
+	\vfill
+	
+	42 Zeichen
+\end{frame}
+
+
+
+
+
+
 
 \begin{frame}[fragile]{Ansatz 2: Rekursion}
 	Rohfassung
@@ -461,6 +535,10 @@ Gerrit Ansmann
 	\begin{python3code}
 	x=[c,a][b]
 	\end{python3code}
+	
+	\pause
+	
+	Achtung: Wenn \texttt{a} und \texttt{c} Ausdrücke wären, würden beide ausgewertet.
 \end{frame}
 
 \begin{frame}[fragile]{Trick:\\ Billiger Switch-Ausdruck}
@@ -501,8 +579,14 @@ Gerrit Ansmann
 \begin{frame}[fragile]{Trick:\\ Vergleiche verketten 2}
 	(nur Python 2)
 	
+	\vfill
+	
+	Seien \texttt{a}, \texttt{b}, \texttt{c} und \texttt{d} Zahlen:
+	
+	\vfill
+	
 	\begin{python3code}
-	if a<b and c<d:
+	if a<b and c>d:
 	\end{python3code}
 	
 	\vfill
@@ -512,9 +596,27 @@ Gerrit Ansmann
 	\vfill
 	
 	\begin{python3code}
-	if a<2>1<b:
+	if a<b<[]>c>d:
 	\end{python3code}
 \end{frame}
+
+
+\begin{frame}[fragile]{Trick: }
+	\begin{python3code}
+	TODO
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	TODO
+	\end{python3code}
+\end{frame}
+
 
 
 
