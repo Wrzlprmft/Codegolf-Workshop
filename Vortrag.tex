@@ -1,0 +1,521 @@
+\documentclass[xcolor=dvipsnames, aspectratio=43, 14pt]{beamer}
+\usefonttheme{professionalfonts}
+
+\usepackage{xltxtra} % lädt auch fixltx2e, etex, fontspec, xunicode …
+
+\usepackage{array, color, enumerate, fixmath, gensymb, graphicx, graphics, icomma, mathcomp, mathtools, minted, multirow, nicefrac, placeins, relsize, rotating, tabularx, tikz, units, xspace, xtab, lipsum}
+
+\usepackage[math-style=upright]{unicode-math}
+
+% Schriften
+\setmathfont{Neo Euler}
+\setromanfont[Mapping=tex-text]{Delius Unicase}
+\setsansfont[Mapping=tex-text]{Delius}
+\setmonofont[Scale=0.96]{Iosevka}
+
+% Statt babel:
+\usepackage{polyglossia}
+\setdefaultlanguage[variant = uk]{english}
+
+% sonstige Einstellungen
+\usetheme{Rochester}
+\useinnertheme{circles}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamerfont{frametitle}{family=\rmfamily}
+\setbeamertemplate{blocks}[rounded]
+
+%Presentation
+\usecolortheme[accent=red]{solarized}
+\setbeamercolor*{frametitle}{fg = solarized@red, bg = solarized@rebase02}
+\setbeamercolor{normal text}{fg = solarized@rebase3, bg = solarized@rebase03}
+
+\definecolor{pagenumbers}{HTML}{B4EBE7}
+
+\addtobeamertemplate{headline}{}
+{%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south east] at (current page.south east) {\textcolor{pagenumbers}{\insertframenumber}};
+	\end{tikzpicture}%
+}
+
+\renewcommand{\tabularxcolumn}[1]{>{\centering\arraybackslash}m{#1}}
+
+\usemintedstyle{solarizedlight}
+\newminted{python3}{
+% 		fontsize = \scriptsize, 
+% 		linenos, stepnumber = 5,
+		frame = lines, framesep = 8pt,
+		baselinestretch = 1.2,
+		numbersep = 8pt,
+		gobble = 0,
+		bgcolor = solarized@rebase02,
+		obeytabs, tabsize = 4}
+% \includeonlyframes{current} %[label=current]
+
+
+\begin{document}
+
+\begin{frame}[plain]
+\begin{center}
+
+\LARGE
+
+{\color{solarized@red}\rmfamily
+
+Codegolf\\ mit Python}
+
+\vfill
+\normalsize
+
+\begin{minipage}{0.8\textwidth}
+	\begin{block}{Codegolf}
+		Die Übung, eine Programmieraufgabe\\ mit möglichst wenig Zeichen zu lösen
+	\end{block}
+\end{minipage}
+
+\vfill
+
+Gerrit Ansmann
+\end{center}
+\end{frame}
+
+\begin{frame}{Warum?}
+	\begin{itemize}
+		\setlength{\itemsep}{\fill}
+		\item Programmiersprache entdecken
+		\item mathematische Werkzeuge entdecken
+		\item Algorithmen und Refaktorisierung üben
+		\item dunkle Seite ausleben
+		\item Spaß haben
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Wie Dunkel?}
+\begin{columns}
+\column{0.53\linewidth}
+	Scheiß auf:
+	\begin{itemize}
+		\item Dokumentation
+		\item Lesbarkeit
+		\item Nutzerfreundlichkeit
+		\item sprechende Namen
+		\item Code-Formatierung
+		\item Speicherbedarf
+		\item Laufzeit
+	\end{itemize}
+\column{0.47\linewidth}
+\includegraphics<2>[width=\linewidth]{meme.png}
+\end{columns}
+ 
+\end{frame}
+
+
+\begin{frame}{Wie?}
+	\begin{itemize}
+		\item Codegolfseiten, z.\,B.:\\
+			codegolf.stackexchange.com
+		\item mit anderen oder gegen andere\\
+			(damit man auch was lernt)
+		\item mit Tests
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Beispiel: Fakultät}
+	\begin{block}{Fakultät (explizite Definition)}
+	\[f(n) = n! = \prod_{i=1}^n i = 1·2·…·n\]
+	\end{block}
+	
+	\pause
+	
+	\begin{block}{Fakultät (rekursive Definition)}
+	\[f(n) = n! = \begin{cases}
+			n·f(n-1) & \mathrm{falls~} n \geq 1\\
+			1 & \mathrm{sonst}
+	          
+	         \end{cases}\]
+	\end{block}
+\end{frame}
+
+\begin{frame}{Aufgabe}
+	Schreibe in möglichst wenig Zeichen\\ eine Python-Funktion \texttt{f} mit:
+	\begin{itemize}
+		\item Argument: nicht-negative ganze Zahl
+		\item Rückgabe: Fakultät des Arguments
+		\item Verhalten bei invalidem Argument: egal
+	\end{itemize}
+	
+	\vfill
+	
+	Testfälle:\\[0.5\baselineskip]
+	\setlength{\tabcolsep}{10pt}
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{@{}c|ccccccc}
+		Argument & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+		Rückgabe & 1 & 1 & 2 & 6 & 24 & 120 & 720
+	\end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]{Test und Zeichenzählen}
+	\begin{python3code}
+	from fakultaet import f
+	from math import factorial
+	from os import stat
+	
+	print(stat("fakultaet.py").st_size)
+	
+	for n in range(10):
+	   if factorial(n)!=f(n) or type(f(n))==bool:
+	      print(n, f(n), factorial(n))
+	\end{python3code}
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1: Schleifen}
+	Rohfassung
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   produkt = 1
+	   for i in range(1,n+1):
+	      produkt *= i
+	   return produkt
+	\end{python3code}
+	
+	\vfill
+	
+	77 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1: Schleifen}
+	Einbuchstabige Variable\strut
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   p = 1
+	   for i in range(1,n+1):
+	      p *= i
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	59 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1: Schleifen}
+	\texttt{+1} verschieben\strut
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   p = 1
+	   for i in range(n):
+	      p *= i+1
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	57 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1: Schleifen}
+	Unnötigen Leerraum entfernen
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   p=1
+	   for i in range(n):p*=i+1
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	50 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.1: Reduce}
+	Rohfassung
+	
+	\vfill
+	
+	\begin{python3code}
+	mul = lambda x,y: x*y
+	def f(n):
+	   return reduce(mul, range(1,n+1), 1)
+	\end{python3code}
+	
+	\vfill
+	
+	68 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.1: Reduce}
+	\texttt{lambda}-Ausdruck
+	
+	\vfill
+	
+	\begin{python3code}
+	mul = lambda x,y: x*y
+	f = lambda n: reduce(mul, range(1,n+1), 1)
+	\end{python3code}
+	
+	\vfill
+	
+	64 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.1: Reduce}
+	Einsetzen und Leerzeichen entfernen
+	
+	\vfill
+	
+	\begin{python3code}
+	f=lambda n:reduce(lambda x,y:x*y,range(1,n+1),1)
+	\end{python3code}
+	
+	\vfill
+	
+	48 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2: Rekursion}
+	Rohfassung
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   if n!=0:
+	      return n*f(n-1)
+	   else:
+	      return 1
+	\end{python3code}
+	\vfill
+	
+	55 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2: Rekursion}
+	Ternärer Operator
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   return n*f(n-1) if n!=0 else 1
+	\end{python3code}
+	\vfill
+	
+	41 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2: Rekursion}
+	Bedingung kürzen:
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   return n*f(n-1) if n else 1
+	\end{python3code}
+	\vfill
+	
+	38 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2: Rekursion}
+	\texttt{lambda}-Ausdruck:
+	
+	\vfill
+	
+	\begin{python3code}
+	f = lambda n: n*f(n-1) if n else 1
+	\end{python3code}
+	\vfill
+	
+	34 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2: Rekursion}
+	Unnötige Leerzeichen entfernen:
+	
+	\vfill
+	
+	\begin{python3code}
+	f=lambda n:n*f(n-1)if n else 1
+	\end{python3code}
+	\vfill
+	
+	30 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2.1: Rekursion}
+	Geht noch mehr?
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   if int(n==0):
+	      return int(n==0)
+	   else:
+	      return n*f(n-1)
+	\end{python3code}
+	
+	\vfill
+	
+	68 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2.1: Rekursion}
+	Logische Operatoren geben\\ das erste entscheidende Argument zurück.
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n):
+	   return int(n==0) or n*f(n-1)
+	\end{python3code}
+	
+	\vfill
+	
+	39 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2.1: Rekursion}
+	\texttt{lambda}-Ausdruck
+	
+	\vfill
+	
+	\begin{python3code}
+	f = lambda n: int(n==0) or n*f(n-1)
+	\end{python3code}
+	
+	\vfill
+	
+	35 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2.1: Rekursion}
+	Ersetze \texttt{int(n==0)} durch Arithmetik:
+	
+	\vfill
+	
+	\begin{python3code}
+	f = lambda n: 0**n or n*f(n-1)
+	\end{python3code}
+	
+	\vfill
+	
+	30 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 2.1: Rekursion}
+	Entferne Leerzeichen:
+	
+	\vfill
+	
+	\begin{python3code}
+	f=lambda n:0**n or n*f(n-1)
+	\end{python3code}
+	
+	\vfill
+	
+	27 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 3: Mogeln}
+	\begin{python3code}
+	import math
+	f=math.factorial
+	\end{python3code}
+	
+	\vfill
+	
+	28 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Trick:\\ Ternären Operator kürzen}
+	Sei \texttt{b} ein Boolean, \texttt{0} oder \texttt{1}.
+	
+	\vfill
+	
+	\begin{python3code}
+	x=a if b else c
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	x=[c,a][b]
+	\end{python3code}
+\end{frame}
+
+\begin{frame}[fragile]{Trick:\\ Billiger Switch-Ausdruck}
+	\begin{python3code}
+	if p==0:x="a"
+	if p==1:x="b"
+	if p==2:x="c"
+	if p==3:x="d"
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	x="abcd"[p]
+	\end{python3code}
+\end{frame}
+
+\begin{frame}[fragile]{Trick:\\ Vergleiche verketten}
+	\begin{python3code}
+	if a<2 and b>1:
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	if a<2>1<b:
+	\end{python3code}
+\end{frame}
+
+\begin{frame}[fragile]{Trick:\\ Vergleiche verketten 2}
+	(nur Python 2)
+	
+	\begin{python3code}
+	if a<b and c<d:
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	if a<2>1<b:
+	\end{python3code}
+\end{frame}
+
+
+
+\end{document}
