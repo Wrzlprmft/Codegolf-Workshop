@@ -12,6 +12,7 @@
 \setromanfont[Mapping=tex-text]{Delius Unicase}
 \setsansfont[Mapping=tex-text]{Delius}
 \setmonofont[Scale=0.96]{Iosevka}
+\newfontfamily\swfamily{Delius Swash Caps}
 
 % Statt babel:
 \usepackage{polyglossia}
@@ -22,8 +23,10 @@
 \useinnertheme{circles}
 \setbeamertemplate{navigation symbols}{}
 
-\setbeamerfont{frametitle}{family=\rmfamily}
+\setbeamerfont{block title}{family=\swfamily}
 \setbeamertemplate{blocks}[rounded]
+
+\setbeamerfont{frametitle}{family=\rmfamily}
 
 %Presentation
 \usecolortheme[accent=red]{solarized}
@@ -76,7 +79,7 @@ Codegolf\\ mit Python}
 
 \vfill
 
-Gerrit Ansmann
+{\fontspec{Delius Swash Caps}Gerrit Ansmann}
 \end{center}
 \end{frame}
 
@@ -121,18 +124,36 @@ Gerrit Ansmann
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Welche Sprache?}
+	Python, natürlich:
+	\begin{itemize}
+		\item vielfältige Syntax
+		\item wenig Boiilerplate-Code
+		\item viele nützlichen Standardfunktionen.
+	\end{itemize}
+	
+	\vfill
+	
+	Nichtsdestotrotz:
+	\begin{itemize}
+		\item Auf jede Sprache anwendbar.
+		\item Es gibt spezielle Codegolf-Sprachen,\\
+			z. B. Pyth (Python-basiert)
+	\end{itemize}
+\end{frame}
+
+
 \begin{frame}{Beispiel: Fakultät}
 	\begin{block}{Fakultät (explizite Definition)}
-	\[f(n) = n! = \prod_{i=1}^n i = 1·2·…·n\]
+	\[f(n) = n! = \prod_{i=1}^n i = 1·2·…·n \qquad (⇒f(0)=1)\]
 	\end{block}
 	
 	\pause
 	
 	\begin{block}{Fakultät (rekursive Definition)}
 	\[f(n) = n! = \begin{cases}
+			1 & \mathrm{falls~} n=0\\
 			n·f(n-1) & \mathrm{falls~} n \geq 1\\
-			1 & \mathrm{sonst}
-	          
 	         \end{cases}\]
 	\end{block}
 \end{frame}
@@ -241,8 +262,43 @@ Gerrit Ansmann
 	50 Zeichen
 \end{frame}
 
+\begin{frame}[fragile]{Ansatz 1: Schleifen}
+	\texttt{p=1} als Argument:
+	
+	\vfill
+	
+	\begin{python3code}
+	def f(n,p=1):
+	   for i in range(n):p*=i+1
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	49 Zeichen
+\end{frame}
+
 \begin{frame}[fragile]{Ansatz 1.1: reduce}
 	Rohfassung
+	
+	\vfill
+	
+	\begin{python3code}
+	mul = lambda x,y: x*y
+	def f(n):
+	   p = 1
+	   for x in range(1,n+1):
+	      p = mul(p, x)
+	   return p
+	\end{python3code}
+	
+	\vfill
+	
+	87 Zeichen
+\end{frame}
+
+\begin{frame}[fragile]{Ansatz 1.1: reduce}
+	Mit \texttt{reduce}-Funktion:
 	
 	\vfill
 	
@@ -489,7 +545,13 @@ Gerrit Ansmann
 	
 	\vfill
 	
-	30 Zeichen
+	\begin{python3code}
+	f = lambda n: 1>>n or n*f(n-1)
+	\end{python3code}
+	
+	\vfill
+	
+	jeweils 30 Zeichen
 \end{frame}
 
 \begin{frame}[fragile]{Ansatz 2.1: Rekursion}
@@ -503,7 +565,14 @@ Gerrit Ansmann
 	
 	\vfill
 	
-	27 Zeichen
+	\begin{python3code}
+	f=lambda n:1>>n or n*f(n-1)
+	\end{python3code}
+
+	
+	\vfill
+	
+	jeweils 27 Zeichen
 \end{frame}
 
 \begin{frame}[fragile]{Ansatz 3: Mogeln}
@@ -601,9 +670,10 @@ Gerrit Ansmann
 \end{frame}
 
 
-\begin{frame}[fragile]{Trick: }
+\begin{frame}[fragile]{Trick: Alias für Standardfunktionen}
 	\begin{python3code}
-	TODO
+	for i,x in enumerate(X):
+	   for j,y in enumerate(Y):foo(x,y,j,i)
 	\end{python3code}
 	
 	\vfill
@@ -613,11 +683,11 @@ Gerrit Ansmann
 	\vfill
 	
 	\begin{python3code}
-	TODO
+	e=enumerate
+	for i,x in e(X):
+	   for j,y in e(Y):foo(x,y,j,i)
 	\end{python3code}
 \end{frame}
-
-
 
 
 \end{document}
