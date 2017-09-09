@@ -1,4 +1,4 @@
-\documentclass[xcolor=dvipsnames, aspectratio=43, 14pt]{beamer}
+\documentclass[xcolor=dvipsnames, aspectratio=169, 14pt]{beamer}
 \usefonttheme{professionalfonts}
 
 \usepackage{xltxtra} % lädt auch fixltx2e, etex, fontspec, xunicode …
@@ -11,7 +11,8 @@
 \setmathfont{Neo Euler}
 \setromanfont[Mapping=tex-text]{Delius Unicase}
 \setsansfont[Mapping=tex-text]{Delius}
-\setmonofont[Scale=0.96]{Iosevka}
+\setmonofont[Scale=0.8, Contextuals=NoAlternate]{Monoid}
+% \setmonofont[Scale=0.96]{Iosevka}
 \newfontfamily\swfamily{Delius Swash Caps}
 
 % Statt babel:
@@ -51,11 +52,10 @@
 		frame = lines, framesep = 8pt,
 		baselinestretch = 1.2,
 		numbersep = 8pt,
-		gobble = 0,
+		gobble = 1,
 		bgcolor = solarized@rebase02,
 		obeytabs, tabsize = 4}
 % \includeonlyframes{current} %[label=current]
-
 
 \begin{document}
 
@@ -66,12 +66,12 @@
 
 {\color{solarized@red}\rmfamily
 
-Codegolf\\ mit Python}
+Codegolf mit Python}
 
 \vfill
 \normalsize
 
-\begin{minipage}{0.8\textwidth}
+\begin{minipage}{0.58\textwidth}
 	\begin{block}{Codegolf}
 		Die Übung, eine Programmieraufgabe\\ mit möglichst wenig Zeichen zu lösen
 	\end{block}
@@ -88,7 +88,8 @@ Codegolf\\ mit Python}
 		\setlength{\itemsep}{\fill}
 		\item Programmiersprache entdecken
 		\item mathematische Werkzeuge entdecken
-		\item Algorithmen und Refaktorisierung üben
+		\item Algorithmen und Refaktorisierung üben\\
+			»refactoring with evil intent«
 		\item dunkle Seite ausleben
 		\item Spaß haben
 	\end{itemize}
@@ -103,11 +104,10 @@ Codegolf\\ mit Python}
 		\item Lesbarkeit
 		\item Nutzerfreundlichkeit
 		\item Standards
-		\item Code-Formatierung
 		\item Speicherbedarf
 		\item Laufzeit
 	\end{itemize}
-\column{0.47\linewidth}
+\column{0.4\linewidth}
 \includegraphics<2>[width=\linewidth]{meme.png}
 \end{columns}
  
@@ -116,20 +116,20 @@ Codegolf\\ mit Python}
 
 \begin{frame}{Wie?}
 	\begin{itemize}
-		\item Codegolfseiten, z.\,B.:\\
-			codegolf.stackexchange.com
-		\item mit anderen oder gegen andere\\
-			(damit man auch was lernt)
+		\setlength{\itemsep}{\fill}
+		\item Codegolfseiten, z.\,B. codegolf.stackexchange.com
+		\item mit anderen oder gegen andere (damit man auch was lernt)
+		\item erstmal selbst versuchen (damit man auch was lernt)
 		\item mit Tests
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Welche Sprache?}
-	Python, natürlich:
+	Selbstverständlich Python – aber warum?
 	\begin{itemize}
 		\item vielfältige Syntax
-		\item wenig Boiilerplate-Code
-		\item viele nützlichen Standardfunktionen.
+		\item wenig Boilerplate-Code
+		\item viele nützlichen Standardfunktionen
 	\end{itemize}
 	
 	\vfill
@@ -138,7 +138,7 @@ Codegolf\\ mit Python}
 	\begin{itemize}
 		\item Auf jede Sprache anwendbar.
 		\item Es gibt spezielle Codegolf-Sprachen,\\
-			z. B. Pyth (Python-basiert)
+			z. B. das Python-basierte Pyth.
 	\end{itemize}
 \end{frame}
 
@@ -152,14 +152,14 @@ Codegolf\\ mit Python}
 	
 	\begin{block}{Fakultät (rekursive Definition)}
 	\[f(n) = n! = \begin{cases}
-			1 & \mathrm{falls~} n=0\\
-			n·f(n-1) & \mathrm{falls~} n \geq 1\\
+			1 & \textsf{falls~} n=0\\
+			n·f(n-1) & \textsf{falls~} n \geq 1\\
 	         \end{cases}\]
 	\end{block}
 \end{frame}
 
 \begin{frame}{Aufgabe}
-	Schreibe in möglichst wenig Zeichen\\ eine Python-Funktion \texttt{f} mit:
+	Schreibe in möglichst wenig Zeichen eine Python-Funktion \texttt{f} mit:
 	\begin{itemize}
 		\item Argument: nicht-negative ganze Zahl
 		\item Rückgabe: Fakultät des Arguments
@@ -177,8 +177,9 @@ Codegolf\\ mit Python}
 	\end{tabular}
 \end{frame}
 
-\begin{frame}[fragile]{Test und Zeichenzählen}
-	\begin{python3code}
+\begin{frame}[fragile]{Test und Zeichenzähler}
+\vspace{-0.7\baselineskip}
+\begin{python3code}
 	from fakultaet import f
 	from math import factorial
 	from os import stat
@@ -186,9 +187,9 @@ Codegolf\\ mit Python}
 	print(stat("fakultaet.py").st_size)
 	
 	for n in range(10):
-	   if factorial(n)!=f(n) or type(f(n))==bool:
-	      print(n, f(n), factorial(n))
-	\end{python3code}
+		if factorial(n)!=f(n) or type(f(n))==bool:
+			print(n, f(n), factorial(n))
+\end{python3code}
 \end{frame}
 
 \begin{frame}[fragile]{Ansatz 1: Schleifen}
@@ -284,17 +285,16 @@ Codegolf\\ mit Python}
 	\vfill
 	
 	\begin{python3code}
-	mul = lambda x,y: x*y
 	def f(n):
 	   p = 1
 	   for x in range(1,n+1):
-	      p = mul(p, x)
+	      p = int.__mul__(p, x)
 	   return p
 	\end{python3code}
 	
 	\vfill
 	
-	87 Zeichen
+	75 Zeichen
 \end{frame}
 
 \begin{frame}[fragile]{Ansatz 1.1: reduce}
@@ -303,14 +303,13 @@ Codegolf\\ mit Python}
 	\vfill
 	
 	\begin{python3code}
-	mul = lambda x,y: x*y
 	def f(n):
-	   return reduce(mul, range(1,n+1), 1)
+	   return reduce(int.__mul__, range(1,n+1), 1)
 	\end{python3code}
 	
 	\vfill
 	
-	68 Zeichen
+	55 Zeichen
 \end{frame}
 
 \begin{frame}[fragile]{Ansatz 1.1: reduce}
@@ -319,27 +318,26 @@ Codegolf\\ mit Python}
 	\vfill
 	
 	\begin{python3code}
-	mul = lambda x,y: x*y
-	f = lambda n: reduce(mul, range(1,n+1), 1)
+	f = lambda n: reduce(int.__mul__, range(1,n+1), 1)
 	\end{python3code}
 	
 	\vfill
 	
-	64 Zeichen
+	51 Zeichen
 \end{frame}
 
 \begin{frame}[fragile]{Ansatz 1.1: reduce}
-	Einsetzen und Leerzeichen entfernen
+	Leerzeichen entfernen
 	
 	\vfill
 	
 	\begin{python3code}
-	f=lambda n:reduce(lambda x,y:x*y,range(1,n+1),1)
+	f=lambda n:reduce(int.__mul__,range(1,n+1),1)
 	\end{python3code}
 	
 	\vfill
 	
-	48 Zeichen
+	46 Zeichen
 \end{frame}
 
 \begin{frame}[fragile]{Ansatz 1.2: exec}
@@ -586,7 +584,7 @@ Codegolf\\ mit Python}
 	28 Zeichen
 \end{frame}
 
-\begin{frame}[fragile]{Trick:\\ Ternären Operator kürzen}
+\begin{frame}[fragile]{Trick: Ternären Operator kürzen}
 	Sei \texttt{b} ein Boolean, \texttt{0} oder \texttt{1}.
 	
 	\vfill
@@ -607,10 +605,10 @@ Codegolf\\ mit Python}
 	
 	\pause
 	
-	Achtung: Wenn \texttt{a} und \texttt{c} Ausdrücke wären, würden beide ausgewertet.
+	Achtung:\\ Wenn \texttt{a} und \texttt{c} Ausdrücke wären, würden beide ausgewertet.
 \end{frame}
 
-\begin{frame}[fragile]{Trick:\\ Billiger Switch-Ausdruck}
+\begin{frame}[fragile]{Trick: Billiger Switch-Ausdruck}
 	\begin{python3code}
 	if p==0:x="a"
 	if p==1:x="b"
@@ -629,7 +627,7 @@ Codegolf\\ mit Python}
 	\end{python3code}
 \end{frame}
 
-\begin{frame}[fragile]{Trick:\\ Vergleiche verketten}
+\begin{frame}[fragile]{Trick: Vergleiche verketten}
 	\begin{python3code}
 	if a<2 and b>1:
 	\end{python3code}
@@ -645,7 +643,7 @@ Codegolf\\ mit Python}
 	\end{python3code}
 \end{frame}
 
-\begin{frame}[fragile]{Trick:\\ Vergleiche verketten 2}
+\begin{frame}[fragile]{Trick: Vergleiche verketten 2}
 	(nur Python 2)
 	
 	\vfill
@@ -686,6 +684,95 @@ Codegolf\\ mit Python}
 	e=enumerate
 	for i,x in e(X):
 	   for j,y in e(Y):foo(x,y,j,i)
+	\end{python3code}
+\end{frame}
+
+% \begin{frame}[plain]
+% 	\begin{center}
+% 		\larger[4]\swfamily Praxisteil
+% 	\end{center}
+% \end{frame}
+
+\begin{frame}[fragile]{Trick: Listen-Operationen}
+	\begin{python3code}
+	A.extend(B)
+	A.append(c)
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	A+=B+[c]
+	\end{python3code}
+\end{frame}
+
+\begin{frame}[fragile]{Trick: Leckende Scopes}
+	\begin{python3code}
+	for x in range(10):
+	   foo(x**2)
+	y=9
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	for y in range(10):foo(y**2)
+	\end{python3code}
+\end{frame}
+
+\begin{frame}[fragile]{Trick: Logik (Wiederholung)}
+	\begin{python3code}
+	x=foo()
+	if not x:return x
+	else:return bar()
+	\end{python3code}
+	
+	\vfill
+	
+	kann gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	return foo()and bar()
+	\end{python3code}
+\end{frame}
+
+\begin{frame}[fragile]{Trick: Eingebaute Funktionen}
+	\texttt{C} enthalte 2-Tupel von Zahlen.
+	
+	\vfill
+	
+	\begin{python3code}
+	x=[a+b for a,b in C]
+	\end{python3code}
+	
+	\vfill
+	
+	kann in Python 2 gekürzt werden zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	x=map(sum,C)
+	\end{python3code}
+	
+	\vfill
+	
+	und in Python 3 zu:
+	
+	\vfill
+	
+	\begin{python3code}
+	*x,=map(sum,C)
 	\end{python3code}
 \end{frame}
 

@@ -1,10 +1,10 @@
-\documentclass[a4paper, 17 pt]{extarticle}
+\documentclass[a4paper, 14 pt]{extarticle}
  
 \usepackage{amsmath, amssymb}
 
 \usepackage{xltxtra}
 
-\usepackage{array, color, enumerate, fixmath, gensymb, graphicx, graphics, icomma, mathcomp, mathtools, minted, multirow, nicefrac, placeins, relsize, rotating, tabularx, titlesec, units, xspace, xtab, lipsum}
+\usepackage{array, color, enumerate, fixmath, gensymb, graphicx, graphics, icomma, mathcomp, mathtools, multirow, nicefrac, placeins, relsize, rotating, tabularx, titlesec, units, xspace, xtab, lipsum}
 
 \usepackage[math-style=upright]{unicode-math}
 
@@ -57,17 +57,6 @@
 
 \thispagestyle{empty}
 
-\usemintedstyle{bw}
-\newminted{python3}{
-% 		fontsize = \scriptsize, 
-% 		linenos, stepnumber = 5,
-		frame = lines,
-		framerule = 1pt,
-		framesep = 8pt,
-		baselinestretch = 1.2,
-		numbersep = 8pt,
-		gobble = 0,
-		obeytabs, tabsize = 4}
 
 \setcounter{section}{1}
 
@@ -87,13 +76,16 @@ Eine Iterable mit Positionen der Kerzen (in der Ebene des Adventskranzes).
 Werden die Kerzen auf diese Positionen gesetzt, muss der Schwerpunkt des Adventskranzes (mit angemessener Genauigkeit) der Mitte des Adventskranzes entsprechen.
 Die Reihenfolge der Kerzen in Ein- und Ausgabe ist dieselbe.
 
+\subsection{Unlösbare Eingaben}
+Wenn die Eingabe einem nicht lösbaren Problem entspricht (z.\,B. wenn eine Kerze schwerer ist als alle anderen zusammen), ist es egal, wie sich die Funktion verhält.
+
 \subsection{Annahmen}
 \begin{itemize}
-	\item Der Adventskranz ist homogen und zweidimensional.
-	\item Der Adventskranz hat Radius~1.
-	\item Die Kerzen sind punktförmig.
+	\item Der Adventskranz sei homogen und zweidimensional.
+	\item Der Adventskranz habe Radius~1.
+	\item Die Kerzen seien punktförmig.
 	\item Die Kerzen werden nicht angezündet\\ (werden also nicht langsam leichter).
-	\item Die Kuh ist eine Kugel.
+	\item Die Kuh sei eine Kugel.
 \end{itemize}
 
 
